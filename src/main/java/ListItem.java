@@ -15,7 +15,6 @@ class ListRenderer implements ListCellRenderer {
         renderer.setFont(new Font("Roboto", Font.PLAIN,15));
         renderer.setText("<html><p style=\"width:400px;margin: 5px\">"+ value.toString() +"</p></html>");
         renderer.setBorder(new LineBorder(Color.ORANGE,1,true));
-
         renderer.setPreferredSize(new Dimension((GUI.WIDTH/2)-50, GUI.HEIGHT/8));
 
         return renderer;

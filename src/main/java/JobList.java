@@ -17,6 +17,8 @@ public class JobList {
             @Override
             public void mouseClicked(MouseEvent event) {
                 if (SwingUtilities.isRightMouseButton(event) && event.getClickCount() == 1) {
+                    /*      ToDo !   */
+                    /////////////////
                     System.out.println("Editbox");
                 }else {
                     JList list = (JList) event.getSource();

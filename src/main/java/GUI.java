@@ -14,7 +14,7 @@ public class GUI extends JFrame {
     static final int WIDTH = 1000;
     static final int HEIGHT = 500;
 
-    JobList listOfJobs = new JobList();
+    private JobList listOfJobs = new JobList();
 
     GUI(){
         super("Jobs To Do");
@@ -57,7 +57,7 @@ public class GUI extends JFrame {
         gridLayoutRight.add(new JLabel("Dziś jest " + date,  SwingConstants.CENTER));
         gridLayoutRight.add(labelTime);
         gridLayoutRight.add(new Label(System.getProperty("user.name") + " what's your works today?", SwingConstants.CENTER));
-        gridLayoutRight.add(new JButton("Read from file..."));
+
 
         /* Add button */
         JButton buttonAdd = new JButton("Add");
@@ -65,6 +65,7 @@ public class GUI extends JFrame {
             popupWindowAdd();
         });
         gridLayoutRight.add(buttonAdd);
+        gridLayoutRight.add(new JButton("Read from file..."));
 
         /*
             Main app panel
@@ -78,7 +79,7 @@ public class GUI extends JFrame {
         /* Refresh time every 1s */
         int delay = 1000; //ms
         ActionListener refresh = evt -> {
-            String time1 = new SimpleDateFormat("HH:mm:ss")
+            String time1 = new SimpleDateFormat("HH:mm")
                     .format(new Date(System.currentTimeMillis()));
             labelTime.setText(time1);
             mainGridPanel.repaint();
@@ -143,7 +144,10 @@ public class GUI extends JFrame {
         });
 
     }
-
+    public boolean setData(JobList list){
+        listOfJobs = list;
+        return true;
+    }
 
 
 }
