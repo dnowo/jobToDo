@@ -46,41 +46,34 @@ public class GUI extends JFrame {
         flowLayoutLeft.setLayout(new BorderLayout());
         flowLayoutLeft.setBackground(Color.decode(jobToDo.secondaryColor));
 
-
+        /*Scroll jobs pane*/
         JPanel jp = new JPanel();
+        listOfJobs.addToList("xD","14:00");
         jp.add(listOfJobs.getJobList());
         flowLayoutLeft.add(BorderLayout.CENTER, new JScrollPane(jp));
 
         /* Right app panel */
-        gridLayoutRight.setLayout(new GridLayout(5,1));
-        gridLayoutRight.setBackground(Color.decode(jobToDo.primaryColor));
-        gridLayoutRight.add(new JLabel("<html><span style='font-size: 25px; font-weight: bold;color:"
-                + jobToDo.textColor
-                + "'>"
-                + "Dziś jest " + date + "</span></html>",
-                SwingConstants.CENTER));
+        gridLayoutRight.setLayout(new GridLayout(8,1));
+        gridLayoutRight.add(new JLabel("Dziś jest " + date,  SwingConstants.CENTER));
         gridLayoutRight.add(labelTime);
-        gridLayoutRight.add(new Label(System.getProperty("user.name") + " what's your works today?"));
+        gridLayoutRight.add(new Label(System.getProperty("user.name") + " what's your works today?", SwingConstants.CENTER));
+        gridLayoutRight.add(new JButton("Read from file..."));
 
+        /* Add button */
         JButton buttonAdd = new JButton("Add");
         buttonAdd.addActionListener(e -> {
             popupWindowAdd();
         });
         gridLayoutRight.add(buttonAdd);
-        gridLayoutRight.add(new JButton("Edit"));
 
         /*
-            BEGIN:
             Main app panel
         */
         GridLayout gridLayout = new GridLayout(1,2);
-       // gridLayout.setHgap(25);
-        mainGridPanel.setLayout(gridLayout);
 
+        mainGridPanel.setLayout(gridLayout);
         mainGridPanel.add(flowLayoutLeft);
         mainGridPanel.add(gridLayoutRight);
-
-        mainGridPanel.setBackground(Color.decode(jobToDo.secondaryColor));
 
         /* Refresh time every 1s */
         int delay = 1000; //ms
@@ -95,33 +88,24 @@ public class GUI extends JFrame {
         /* Start a timer */
         new Timer(delay, refresh).start();
 
-       // this.setJMenuBar(menuBar);
         this.add(mainGridPanel);
         this.setSize(WIDTH,HEIGHT);
         this.setVisible(true);
         this.setLocation(150,50);
 
-        /*
-            END:
-            Main app panel
-        */
     }
 
     private void popupWindowAdd(){
-        JFrame addFrame = new JFrame("New job");
-
+        JFrame addFrame = new JFrame("A new job");
 
         Container content = addFrame.getContentPane();
         SpringLayout sL = new SpringLayout();
-
 
         JLabel nameLabel = new JLabel("Type job name below:");
         JLabel hourLabel = new JLabel("Type hour (format eg. 13:23) below:");
         JTextField name = new JTextField(50);
         JTextField hour = new JTextField(5);
         JButton addButton = new JButton("Add");
-
-
 
         content.add(nameLabel);
         content.add(name);
@@ -152,6 +136,7 @@ public class GUI extends JFrame {
                 String nameJob = name.getText();
                 String hourJob = hour.getText();
                 listOfJobs.addToList(nameJob,hourJob);
+
                 System.out.println(name.getText());
                 System.out.println(hour.getText());
             }
