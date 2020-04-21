@@ -1,9 +1,12 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class GUI extends JFrame {
@@ -54,10 +57,53 @@ public class GUI extends JFrame {
 
 
         /* Add button */
+        JButton saveData = new JButton("Save jobs");
         JButton buttonAdd = new JButton("Add");
+        JButton readData = new JButton("Read jobs from file");
         buttonAdd.addActionListener(e -> popupWindowAdd());
         gridLayoutRight.add(buttonAdd);
-        gridLayoutRight.add(new JButton("Read from file..."));
+        gridLayoutRight.add(new JLabel(""));
+        gridLayoutRight.add(readData);
+        readData.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("Specify file to read");
+                FileNameExtensionFilter jobFilter = new FileNameExtensionFilter("jobs files (*.jobs)","jobs");
+                fileChooser.setFileFilter(jobFilter);
+                fileChooser.setCurrentDirectory(new File(SaveData.pathToFile));
+                int fileToRead = fileChooser.showSaveDialog(GUI.this);
+                if(fileToRead == JFileChooser.APPROVE_OPTION){
+                    File fileRead = fileChooser.getSelectedFile();
+                    ImportData impotedData = new ImportData(fileRead);
+
+                    Thread readThread = new Thread(impotedData);
+                    readThread.start();
+                    try {
+                        readThread.join();
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+
+                    listOfJobs.update(impotedData.getList());
+                }
+            }
+        });
+        gridLayoutRight.add(saveData);
+        saveData.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                Thread saveThread = new Thread(new SaveData(listOfJobs.getJobs()));
+                saveThread.start();
+                try {
+                    saveThread.join();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
 
         /* Main app panel */
         GridLayout gridLayout = new GridLayout(1,2);
@@ -85,7 +131,6 @@ public class GUI extends JFrame {
         this.setSize(WIDTH,HEIGHT);
         this.setVisible(true);
         this.setLocation(150,50);
-
     }
 
     private void popupWindowAdd(){

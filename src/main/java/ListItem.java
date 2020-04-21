@@ -1,6 +1,5 @@
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 class ListRenderer implements ListCellRenderer {
@@ -20,7 +19,7 @@ class ListRenderer implements ListCellRenderer {
         return renderer;
     }
 }
-class ListItem{
+class ListItem {
 
     private String label;
     private StringBuilder job;

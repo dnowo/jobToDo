@@ -7,7 +7,7 @@ import java.util.List;
 
 public class JobList {
     private List<ListItem> jobs = new ArrayList<>();
-    private JList<Object> listOfJobs;
+    private JList<Object> jListJobs;
     private JButton editButton;
     private JButton yesButton;
     private JButton noButton;
@@ -17,11 +17,11 @@ public class JobList {
 
     JobList(){
         jobs.add(new ListItem("Test work to do for today...", "12:00"));
-        listOfJobs = new JList<>(jobs.toArray());
+        jListJobs = new JList<>(jobs.toArray());
 
-        listOfJobs.setCellRenderer(new ListRenderer());
-        listOfJobs.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        listOfJobs.addMouseListener(new MouseAdapter() {
+        jListJobs.setCellRenderer(new ListRenderer());
+        jListJobs.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        jListJobs.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent event) {
 
@@ -80,16 +80,18 @@ public class JobList {
         });
 
     }
-
+    public List<ListItem> getJobs(){
+        return jobs;
+    }
     public JList<Object> getJobList(){
-        return this.listOfJobs;
+        return this.jListJobs;
     }
 
     public void addToList(String label, String hour){
         jobs.add(new ListItem(label, hour));
-        listOfJobs.setListData(jobs.toArray());
-        listOfJobs.revalidate();
-        listOfJobs.repaint();
+        jListJobs.setListData(jobs.toArray());
+        jListJobs.revalidate();
+        jListJobs.repaint();
     }
 
     private void popupWindowDelete(){
@@ -130,5 +132,11 @@ public class JobList {
         content.setLayout(sL);
         popupFrame.setSize(new Dimension(500,200));
         popupFrame.setVisible(true);
+    }
+    public void update(List<ListItem> list){
+        jobs.addAll(list);
+        jListJobs.setListData(jobs.toArray());
+        jListJobs.revalidate();
+        jListJobs.repaint();
     }
 }

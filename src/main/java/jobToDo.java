@@ -10,12 +10,7 @@ public class jobToDo{
     public final static Rectangle marginProgram = new Rectangle(130,130,0,0);
 
     public static void main(String[] args) {
-
-        ImportData importFromFile = new ImportData();
-        Thread thread0 = new Thread(importFromFile);
-        thread0.start();
-
-        SwingUtilities.invokeLater(() -> new GUI());
+        SwingUtilities.invokeLater(GUI::new);
     }
 
 }
