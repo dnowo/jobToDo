@@ -1,7 +1,11 @@
 public class ImportData implements Runnable {
     @Override
     public void run() {
-        //Todo
+        // Todo
         // Read from file
+        //readData();
+    }
+    public static boolean readData(){
+        return true;
     }
 }

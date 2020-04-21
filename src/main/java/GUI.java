@@ -1,26 +1,20 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
-
 public class GUI extends JFrame {
-    private Rectangle marginProgram = new Rectangle(130,130,0,0);
+
     static final int WIDTH = 1000;
     static final int HEIGHT = 500;
 
     private JobList listOfJobs = new JobList();
 
     GUI(){
-        super("Jobs To Do");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setBounds(marginProgram);
-
+        super(jobToDo.appName);
         /* Date & Time */
         SimpleDateFormat formatHour = new SimpleDateFormat("HH:mm:ss");
         SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM.yyyy");
@@ -46,9 +40,9 @@ public class GUI extends JFrame {
         flowLayoutLeft.setLayout(new BorderLayout());
         flowLayoutLeft.setBackground(Color.decode(jobToDo.secondaryColor));
 
-        /*Scroll jobs pane*/
+        /* Scroll jobs pane */
         JPanel jp = new JPanel();
-        listOfJobs.addToList("xD","14:00");
+
         jp.add(listOfJobs.getJobList());
         flowLayoutLeft.add(BorderLayout.CENTER, new JScrollPane(jp));
 
@@ -56,20 +50,16 @@ public class GUI extends JFrame {
         gridLayoutRight.setLayout(new GridLayout(8,1));
         gridLayoutRight.add(new JLabel("Dziś jest " + date,  SwingConstants.CENTER));
         gridLayoutRight.add(labelTime);
-        gridLayoutRight.add(new Label(System.getProperty("user.name") + " what's your works today?", SwingConstants.CENTER));
+        gridLayoutRight.add(new Label(System.getProperty("user.name") + " what's your works today?", SwingConstants.VERTICAL));
 
 
         /* Add button */
         JButton buttonAdd = new JButton("Add");
-        buttonAdd.addActionListener(e -> {
-            popupWindowAdd();
-        });
+        buttonAdd.addActionListener(e -> popupWindowAdd());
         gridLayoutRight.add(buttonAdd);
         gridLayoutRight.add(new JButton("Read from file..."));
 
-        /*
-            Main app panel
-        */
+        /* Main app panel */
         GridLayout gridLayout = new GridLayout(1,2);
 
         mainGridPanel.setLayout(gridLayout);
@@ -89,6 +79,8 @@ public class GUI extends JFrame {
         /* Start a timer */
         new Timer(delay, refresh).start();
 
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setBounds(jobToDo.marginProgram);
         this.add(mainGridPanel);
         this.setSize(WIDTH,HEIGHT);
         this.setVisible(true);
@@ -108,10 +100,9 @@ public class GUI extends JFrame {
         JTextField hour = new JTextField(5);
         JButton addButton = new JButton("Add");
 
-        content.add(nameLabel);
-        content.add(name);
-        content.add(hourLabel);
-        content.add(hour);
+        content.add(nameLabel); content.add(name);
+        content.add(hourLabel); content.add(hour);
+
         content.add(addButton);
 
         sL.putConstraint(SpringLayout.WEST, nameLabel,10,SpringLayout.WEST, content);
@@ -126,28 +117,24 @@ public class GUI extends JFrame {
         sL.putConstraint(SpringLayout.NORTH, addButton,18,SpringLayout.NORTH, hourLabel);
 
         content.setLayout(sL);
-        addFrame.setBounds(marginProgram);
+        addFrame.setBounds(jobToDo.marginProgram);
         addFrame.setSize(new Dimension(500,200));
         addFrame.setVisible(true);
 
         addButton.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                String nameJob = name.getText();
-                String hourJob = hour.getText();
-                listOfJobs.addToList(nameJob,hourJob);
-
-                System.out.println(name.getText());
-                System.out.println(hour.getText());
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                listOfJobs.addToList(name.getText(), hour.getText());
+                addFrame.dispose();
             }
         });
-
     }
     public boolean setData(JobList list){
         listOfJobs = list;
         return true;
     }
+
 
 
 }

@@ -37,6 +37,21 @@ class ListItem{
                 .append(hour)
                 .append("</span></html>");
     }
+    public void setLabel(String label){
+        this.label = label;
+    }
+
+    public void setHour(String hour) {
+        this.hour = hour;
+    }
+
+    public String getHour() {
+        return hour;
+    }
+
+    public String getLabel() {
+        return label;
+    }
 
     @Override
     public String toString() {
