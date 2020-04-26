@@ -2,9 +2,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -136,11 +134,91 @@ public class GUI extends JFrame {
         /* Start a timer */
         new Timer(delay, refresh).start();
 
+        /* Add to tray functionality */
+
+        /* System tray */
+        if(!SystemTray.isSupported()){
+            System.out.println("System tray is not supported.");
+            return ;
+        }
+        SystemTray systemTray = SystemTray.getSystemTray();
+        Image image = Toolkit.getDefaultToolkit().getImage("./images/favicon.png");
+
+        PopupMenu trayPopupMenu = new PopupMenu();
+
+        MenuItem action = new MenuItem("Show");
+        action.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               setVisible(true);
+               toFront();
+               setState(Frame.NORMAL);
+            }
+        });
+        trayPopupMenu.add(action);
+
+        MenuItem close = new MenuItem("Close");
+        close.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        trayPopupMenu.add(close);
+
+        TrayIcon trayIcon = new TrayIcon(image, jobToDo.appName, trayPopupMenu);
+        trayIcon.setImageAutoSize(true);
+        trayIcon.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                if(e.getClickCount() >= 2){
+                    setVisible(true);
+                    toFront();
+                    setState(Frame.NORMAL);
+                }
+            }
+        });
+
+        addWindowStateListener(new WindowStateListener() {
+            public void windowStateChanged(WindowEvent e) {
+                if(e.getNewState()==ICONIFIED){
+                    try {
+                        systemTray.add(trayIcon);
+                        setVisible(false);
+                        System.out.println("Added to SystemTray");
+                    } catch (AWTException ex) {
+                        System.out.println("Unable to add to tray");
+                    }
+                }
+                if(e.getNewState()==7){
+                    try{
+                        systemTray.add(trayIcon);
+                        setVisible(false);
+                        System.out.println("added to SystemTray");
+                    }catch(AWTException ex){
+                        System.out.println("Unable to add to tray");
+                    }
+                }
+                if(e.getNewState()==MAXIMIZED_BOTH){
+                    systemTray.remove(trayIcon);
+                    setVisible(true);
+                    System.out.println("Tray icon removed");
+                }
+                if(e.getNewState()==NORMAL){
+                    systemTray.remove(trayIcon);
+                    setVisible(true);
+                    System.out.println("Tray icon removed");
+                }
+            }
+        });
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setBounds(jobToDo.marginProgram);
         this.add(mainGridPanel);
         this.setSize(WIDTH,HEIGHT);
         this.setVisible(true);
+        this.setResizable(false);
         this.setLocation(150,50);
         try{
             this.setIconImage(ImageIO.read(new File("./images/favicon.png")));

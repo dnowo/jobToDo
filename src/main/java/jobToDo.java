@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class jobToDo{
     public final static String primaryColor = "#FF0000";
@@ -10,18 +12,6 @@ public class jobToDo{
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(GUI::new);
-
-        /* ToDo
-            + Debug delete window
-            + Domyslne wczytywanie pliku.
-            + Rozszerzyć jlabela który printuje prace.
-            + Informacje how2use.
-            + Ograniczenie znaków i walidacja godziny.
-            Powiadomienia.
-            Add to tray.
-            Graficznie ogarnąć
-            JavaDocsy
-        */
     }
 
 }

@@ -17,7 +17,7 @@ public class InputValidator {
     public boolean isHourGood(){
         Date hour;
         SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-        if(!toValidateHour.matches("[0-9][0-9]:[0-9][0-9]") || toValidateHour.length() > 5) return false;
+        if(!toValidateHour.matches("[012][0-9]:[0-5][0-9]") || toValidateHour.length() > 5) return false;
         try{
             hour = format.parse(toValidateHour);
         }catch (ParseException e){
