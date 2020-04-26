@@ -1,9 +1,5 @@
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 class ListRenderer implements ListCellRenderer {
     protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
@@ -15,7 +11,6 @@ class ListRenderer implements ListCellRenderer {
         renderer.setEnabled(list.isEnabled());
         renderer.setFont(new Font("Roboto", Font.PLAIN,12));
         renderer.setText("<html><p style=\"width:350px;margin: 5px\">"+ value.toString() +"</p></html>");
-        //renderer.setBorder(new LineBorder(Color.BLACK,1,true));
         renderer.setPreferredSize(new Dimension((GUI.WIDTH/2)-50, GUI.HEIGHT/6));
         return renderer;
     }

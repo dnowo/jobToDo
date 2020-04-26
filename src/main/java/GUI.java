@@ -6,7 +6,9 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GUI extends JFrame {
 
@@ -18,6 +20,7 @@ public class GUI extends JFrame {
     public String currentTime = new SimpleDateFormat("HH:mm")
             .format(new Date(System.currentTimeMillis()));
     private JLabel labelTime = new JLabel(currentTime, SwingConstants.CENTER);
+    private TrayIcon trayIcon;
 
     GUI(){
         super(jobToDo.appName);
@@ -59,6 +62,7 @@ public class GUI extends JFrame {
 
         /* Add button */
         JButton saveData = new JButton("Save jobs");
+        JButton deleteData = new JButton("Delete all jobs");
         JButton buttonAdd = new JButton("Add");
         JButton readData = new JButton("Read jobs from file");
         JLabel infoLabel = new JLabel("<html><p style='margin: 10px'>Left click - Delete job.<br/>" +
@@ -95,7 +99,9 @@ public class GUI extends JFrame {
                 }
             }
         });
+
         gridLayoutRight.add(saveData);
+
         saveData.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -110,7 +116,16 @@ public class GUI extends JFrame {
             }
         });
         gridLayoutRight.add(infoLabel);
-
+        gridLayoutRight.add(deleteData);
+        deleteData.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                java.util.List<ListItem> toEmpty = listOfJobs.getJobs();
+                toEmpty.clear();
+                listOfJobs.update(toEmpty);
+            }
+        });
         /* Main app panel */
         GridLayout gridLayout = new GridLayout(1,2);
 
@@ -118,28 +133,10 @@ public class GUI extends JFrame {
         mainGridPanel.add(flowLayoutLeft);
         mainGridPanel.add(gridLayoutRight);
 
-        /* Refresh time every 1s */
-        int delay = 1000; //ms
-        ActionListener refresh = evt -> {
-
-            currentTime = new SimpleDateFormat("HH:mm")
-                    .format(new Date(System.currentTimeMillis()));
-
-            labelTime.setText("<html><span style='font-weight: bold; font-size: 20px;'>"+ currentTime +"</span></html>");
-
-            mainGridPanel.repaint();
-            mainGridPanel.revalidate();
-        };
-
-        /* Start a timer */
-        new Timer(delay, refresh).start();
-
         /* Add to tray functionality */
-
-        /* System tray */
         if(!SystemTray.isSupported()){
             System.out.println("System tray is not supported.");
-            return ;
+            return;
         }
         SystemTray systemTray = SystemTray.getSystemTray();
         Image image = Toolkit.getDefaultToolkit().getImage("./images/favicon.png");
@@ -150,9 +147,11 @@ public class GUI extends JFrame {
         action.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               setVisible(true);
-               toFront();
-               setState(Frame.NORMAL);
+                setVisible(true);
+                toFront();
+                systemTray.remove(trayIcon);
+                setState(Frame.NORMAL);
+
             }
         });
         trayPopupMenu.add(action);
@@ -166,16 +165,17 @@ public class GUI extends JFrame {
         });
         trayPopupMenu.add(close);
 
-        TrayIcon trayIcon = new TrayIcon(image, jobToDo.appName, trayPopupMenu);
+        trayIcon = new TrayIcon(image, jobToDo.appName, trayPopupMenu);
         trayIcon.setImageAutoSize(true);
         trayIcon.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-                if(e.getClickCount() >= 2){
+                if(e.getClickCount() == 2){
                     setVisible(true);
                     toFront();
                     setState(Frame.NORMAL);
+                    systemTray.remove(trayIcon);
                 }
             }
         });
@@ -213,6 +213,36 @@ public class GUI extends JFrame {
             }
         });
 
+        /* Refresh time every 1s */
+        int delay = 1000; //ms
+        Calendar now = Calendar.getInstance();
+        int secs = now.get(Calendar.SECOND);
+        AtomicInteger checkTime = new AtomicInteger(Math.abs(60-secs)); //s
+
+        ActionListener refresh = evt -> {
+            currentTime = new SimpleDateFormat("HH:mm")
+                    .format(new Date(System.currentTimeMillis()));
+            labelTime.setText("<html><span style='font-weight: bold; font-size: 20px;'>"+ currentTime +"</span></html>");
+            checkTime.getAndDecrement();
+            String label,hour;
+            if(checkTime.get() == 0) {
+                ListItem item = Notifications.notify(listOfJobs.getJobs());
+                if(item != null) {
+                    label = item.getLabel();
+                    hour = item.getHour();
+                    trayIcon.displayMessage(label, hour, TrayIcon.MessageType.NONE);
+                }
+                checkTime.set(30);
+            }
+
+            mainGridPanel.repaint();
+            mainGridPanel.revalidate();
+        };
+
+
+        /* Start a timer */
+        new Timer(delay, refresh).start();
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setBounds(jobToDo.marginProgram);
         this.add(mainGridPanel);
@@ -236,7 +266,7 @@ public class GUI extends JFrame {
 
         JLabel nameLabel = new JLabel("Type job name below:");
         JLabel hourLabel = new JLabel("Type hour (format eg. 13:23) below:");
-        JLabel warningLabel = new JLabel("<html><p style='color: red;'>You trying to add a wrong data! Check it again please.</p></html>");
+        JLabel warningLabel = new JLabel("<html><p style='color: red; font-weight: bold;'>You trying to add a wrong data! Check it again please.</p></html>");
         JTextField name = new JTextField(50);
         JTextField hour = new JTextField(5);
         JButton addButton = new JButton("Add");

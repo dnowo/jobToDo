@@ -36,7 +36,6 @@ public class JobList {
                 int index = list.locationToIndex(event.getPoint()); // Get index of item
                 ListItem item = (ListItem) list.getModel().getElementAt(index);
 
-
                 if (SwingUtilities.isRightMouseButton(event) && event.getClickCount() == 1) {
                     /* If right pressed - edit item */
                     popupFrame = new JFrame("Edit job");
@@ -169,4 +168,5 @@ public class JobList {
         }
         update(defaultImport.getList());
     }
+
 }
