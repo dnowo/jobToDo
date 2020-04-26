@@ -1,7 +1,13 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +21,9 @@ public class JobList {
     private JTextField hour;
     private JFrame popupFrame;
 
+    private boolean isClicked = false;
+
     JobList(){
-        jobs.add(new ListItem("Test work to do for today...", "12:00"));
         jListJobs = new JList<>(jobs.toArray());
 
         jListJobs.setCellRenderer(new ListRenderer());
@@ -28,6 +35,7 @@ public class JobList {
                 JList list = (JList) event.getSource();
                 int index = list.locationToIndex(event.getPoint()); // Get index of item
                 ListItem item = (ListItem) list.getModel().getElementAt(index);
+
 
                 if (SwingUtilities.isRightMouseButton(event) && event.getClickCount() == 1) {
                     /* If right pressed - edit item */
@@ -54,26 +62,31 @@ public class JobList {
                     });
                 } else {
                     /* If left button pressed - delete item. */
-                    popupWindowDelete();
+                    if(!isClicked){
+                        popupWindowDelete();
 
-                    yesButton.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mousePressed(MouseEvent e) {
-                            super.mousePressed(e);
-                            jobs.remove(index);
-                            list.setListData(jobs.toArray());
-                            list.revalidate();
-                            list.repaint();
-                            popupFrame.dispose();
-                        }
-                    });
-                    noButton.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mousePressed(MouseEvent e) {
-                            super.mousePressed(e);
-                            popupFrame.dispose();
-                        }
-                    });
+                        yesButton.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mousePressed(MouseEvent e) {
+                                super.mousePressed(e);
+                                jobs.remove(index);
+                                list.setListData(jobs.toArray());
+                                list.revalidate();
+                                list.repaint();
+                                isClicked = false;
+                                popupFrame.dispose();
+                            }
+                        });
+                        noButton.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mousePressed(MouseEvent e) {
+                                super.mousePressed(e);
+                                popupFrame.dispose();
+                                isClicked = false;
+                            }
+                        });
+                    }
+
                 }
 
             }
@@ -83,6 +96,7 @@ public class JobList {
     public List<ListItem> getJobs(){
         return jobs;
     }
+
     public JList<Object> getJobList(){
         return this.jListJobs;
     }
@@ -105,7 +119,10 @@ public class JobList {
         popupFrame.setBounds(jobToDo.marginProgram);
         popupFrame.setSize(new Dimension(400,75));
         popupFrame.setVisible(true);
+        isClicked = true;
+
     }
+
     private void popupWindowEdit(){
 
         Container content = popupFrame.getContentPane();
@@ -133,10 +150,23 @@ public class JobList {
         popupFrame.setSize(new Dimension(500,200));
         popupFrame.setVisible(true);
     }
+
     public void update(List<ListItem> list){
         jobs.addAll(list);
         jListJobs.setListData(jobs.toArray());
         jListJobs.revalidate();
         jListJobs.repaint();
+    }
+
+    public void setDefaultData(){
+        ImportData defaultImport = new ImportData(new File(SaveData.pathToFile));
+        Thread defaultReadThread = new Thread(defaultImport);
+        defaultReadThread.start();
+        try {
+            defaultReadThread.join();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        update(defaultImport.getList());
     }
 }

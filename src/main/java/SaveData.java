@@ -11,7 +11,7 @@ public class SaveData implements Runnable {
             + System.getProperty("user.name") + File.separator
             + "Documents" + File.separator
             + "JobToDo" + File.separator
-            + "yourJobs.jobs";
+            + "Jobs.jobs";
     private File file;
 
     SaveData(List<ListItem> list){
@@ -20,8 +20,11 @@ public class SaveData implements Runnable {
         file.getParentFile().mkdirs();
         try{
             if(file.createNewFile()) System.out.println("File created!");
-            else if(file.exists()) System.out.println("File exists!");
-            else System.out.println("Error while creating a file!");
+            else if(file.exists()) {
+                System.out.println("File exists!");
+                file.delete();
+                file.createNewFile();
+            } else System.out.println("Error while creating a file!");
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -40,8 +43,8 @@ public class SaveData implements Runnable {
                 bufferedWriter.write(i.getLabel()
                         + "~!~"
                         + i.getHour()
-                        + "~!~"
-                        + System.getProperty(System.lineSeparator()) );
+                        );
+                bufferedWriter.newLine();
             }
         }catch(IOException e){
             e.printStackTrace();

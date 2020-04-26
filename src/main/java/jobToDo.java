@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.plaf.TableHeaderUI;
 import java.awt.*;
 
 public class jobToDo{
@@ -11,6 +10,18 @@ public class jobToDo{
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(GUI::new);
+
+        /* ToDo
+            + Debug delete window
+            + Domyslne wczytywanie pliku.
+            + Rozszerzyć jlabela który printuje prace.
+            + Informacje how2use.
+            + Ograniczenie znaków i walidacja godziny.
+            Powiadomienia.
+            Add to tray.
+            Graficznie ogarnąć
+            JavaDocsy
+        */
     }
 
 }

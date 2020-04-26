@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class ImportData implements Runnable {
     private File fileToRead;
-    public List<ListItem> list = new ArrayList<>();
+    private List<ListItem> list = new ArrayList<>();
 
     public ImportData(File fileToRead) {
         this.fileToRead = fileToRead;
@@ -16,21 +16,19 @@ public class ImportData implements Runnable {
     public void run() {
         readData();
     }
-    private void readData(){
 
+    private void readData(){
         try{
             Scanner reader = new Scanner(fileToRead);
             while(reader.hasNextLine()){
                 String data = reader.nextLine();
                 String[] splited = data.split("~!~");
+                System.out.println(splited[0] + splited[1]);
                 list.add(new ListItem(splited[0], splited[1]));
             }
         }catch (FileNotFoundException e){
             e.printStackTrace();
         }
-        /*ToDo*/
-        //for(ListItem i : list) System.out.println(i.getHour() + i.getLabel());
-
     }
 
     public List<ListItem> getList() {
