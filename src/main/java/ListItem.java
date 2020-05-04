@@ -1,20 +1,37 @@
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 class ListRenderer implements ListCellRenderer {
-    protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+
+    protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer(){
+        @Override
+        protected void paintComponent(Graphics g) {
+
+            try{
+                g.drawImage(ImageIO.read(new File("./images/job.png")), 0, 0, null);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            setOpaque(false);
+            setForeground(Color.white);
+            setFont(new Font("Roboto", Font.PLAIN,12));
+            super.paintComponent(g);
+         }
+    };
 
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
-
         JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index,
                 isSelected, hasFocus);
         renderer.setEnabled(list.isEnabled());
-        renderer.setFont(new Font("Roboto", Font.PLAIN,12));
-        renderer.setText("<html><p style=\"width:350px;margin: 5px\">"+ value.toString() +"</p></html>");
         renderer.setPreferredSize(new Dimension((GUI.WIDTH/2)-50, GUI.HEIGHT/6));
+        defaultRenderer.setText("<html><p style=\"width:350px;margin: 5px\">"+ value.toString() +"</p></html>");
         return renderer;
     }
 }
+
 class ListItem {
 
     private String label;

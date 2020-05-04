@@ -1,13 +1,11 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +26,7 @@ public class JobList {
 
         jListJobs.setCellRenderer(new ListRenderer());
         jListJobs.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         jListJobs.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent event) {
@@ -63,7 +62,6 @@ public class JobList {
                     /* If left button pressed - delete item. */
                     if(!isClicked){
                         popupWindowDelete();
-
                         yesButton.addMouseListener(new MouseAdapter() {
                             @Override
                             public void mousePressed(MouseEvent e) {
@@ -108,28 +106,44 @@ public class JobList {
     }
 
     private void popupWindowDelete(){
+
         popupFrame = new JFrame("Delete");
+        try {
+            BufferedImage img = ImageIO.read(new File("./images/deleteAsk.png"));
+            popupFrame.setContentPane(new ImagePrinter(img));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        JLabel wantToDelete = new JLabel("You really meant to delete?");
+        wantToDelete.setForeground(Color.white);
         yesButton = new JButton("Yes");
         noButton = new JButton("No");
         popupFrame.setLayout(new FlowLayout());
-        popupFrame.add(new JLabel("You really meant to delete?"));
+        popupFrame.add(wantToDelete);
         popupFrame.add(yesButton);
         popupFrame.add(noButton);
         popupFrame.setBounds(jobToDo.marginProgram);
         popupFrame.setSize(new Dimension(400,75));
         popupFrame.setVisible(true);
         isClicked = true;
-
+        popupFrame.setDefaultCloseOperation(0);
     }
 
     private void popupWindowEdit(){
-
+        try {
+            BufferedImage img = ImageIO.read(new File("./images/popupBackground.png"));
+            popupFrame.setContentPane(new ImagePrinter(img));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
         Container content = popupFrame.getContentPane();
+
         SpringLayout sL = new SpringLayout();
 
         JLabel nameLabel = new JLabel("Type job name below:");
         JLabel hourLabel = new JLabel("Type hour (format eg. 13:23) below:");
-
+        nameLabel.setForeground(Color.white);
+        hourLabel.setForeground(Color.white);
         content.add(nameLabel); content.add(name);
         content.add(hourLabel); content.add(hour);
         content.add(editButton);

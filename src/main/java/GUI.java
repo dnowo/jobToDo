@@ -1,8 +1,10 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -28,12 +30,23 @@ public class GUI extends JFrame {
         /* Date & Time */
         SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM.yyyy");
         String date = formatDate.format(new Date());
+        labelTime.setForeground(Color.white);
 
         /* Layout JPanels JFrames*/
         JPanel mainGridPanel = new JPanel();
-        JPanel flowLayoutLeft = new JPanel();
-        JPanel gridLayoutRight = new JPanel();
+        JPanel borderLayoutLeft = new JPanel();
+        JPanel gridLayoutRight = new JPanel(){
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                try{
+                    g.drawImage(ImageIO.read(new File("./images/rightGridBackground.png")), 0, 0, null);
 
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+            }
+        };
         /* Set system default layout */
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -43,35 +56,77 @@ public class GUI extends JFrame {
         }
 
         /* Left side of app (job list) */
-        flowLayoutLeft.setLayout(new BorderLayout());
-        flowLayoutLeft.setBackground(Color.decode(jobToDo.secondaryColor));
+        BorderLayout bL = new BorderLayout();
+        borderLayoutLeft.setLayout(bL);
+        borderLayoutLeft.setBackground(Color.BLACK);
 
         /* Scroll jobs pane */
-        JPanel jp = new JPanel();
+        JPanel jp = new JPanel(){
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                try{
+                    BufferedImage image = ImageIO.read(new File("./images/leftGridBackground.png"));
+                    int iw = image.getWidth(this);
+                    int ih = image.getHeight(this);
+                    if (iw > 0 && ih > 0) {
+                        for (int x = 0; x < getWidth(); x += iw) {
+                            for (int y = 0; y < getHeight(); y += ih) {
+                                g.drawImage(image, x, y, iw, ih, this);
+                            }
+                        }
+                    }
+
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void setBackground(Color bg) {
+                super.setBackground(Color.BLACK);
+            }
+        };
         listOfJobs.setDefaultData();
         jp.add(listOfJobs.getJobList());
-        flowLayoutLeft.add(BorderLayout.CENTER, new JScrollPane(jp));
+        borderLayoutLeft.add(BorderLayout.CENTER, new JScrollPane(jp));
 
         /* Right app panel */
         gridLayoutRight.setLayout(new GridLayout(8,1));
-
         gridLayoutRight.add(labelTime, SwingConstants.CENTER);
         labelTime.setText("<html><span style='font-weight: bold; font-size: 20px;'>"+ currentTime +"</span></html>");
-        gridLayoutRight.add(new JLabel("Today is " + date,  SwingConstants.CENTER));
+        JLabel dateLabel = new JLabel("Today is " + date,  SwingConstants.CENTER);
+        dateLabel.setForeground(Color.white);
+        gridLayoutRight.add(dateLabel);
 
 
         /* Add button */
-        JButton saveData = new JButton("Save jobs");
-        JButton deleteData = new JButton("Delete all jobs");
-        JButton buttonAdd = new JButton("Add");
-        JButton readData = new JButton("Read jobs from file");
-        JLabel infoLabel = new JLabel("<html><p style='margin: 10px'>Left click - Delete job.<br/>" +
-                "Right click - Edit job.<br />" +
-                "Before you exit program, be sure pressed 'Save jobs'.</p></html>");
+        JLabel saveData = new JLabel();
+        JLabel deleteData = new JLabel();
+        JLabel buttonAdd = new JLabel();
+        JLabel readData = new JLabel();
+        JLabel infoLabel = new JLabel();
 
-        buttonAdd.addActionListener(e -> popupWindowAdd());
-        gridLayoutRight.add(buttonAdd);
+        try{
+            buttonAdd = new JLabel(new ImageIcon(ImageIO.read(new File("./images/buttonAdd.png"))));
+            deleteData = new JLabel(new ImageIcon(ImageIO.read(new File("./images/buttonDelete.png"))));
+            saveData = new JLabel(new ImageIcon(ImageIO.read(new File("./images/buttonSave.png"))));
+            readData = new JLabel(new ImageIcon(ImageIO.read(new File("./images/buttonRead.png"))));
+            infoLabel = new JLabel(new ImageIcon(ImageIO.read(new File("./images/infoLabel.png"))));
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        buttonAdd.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                popupWindowAdd();
+            }
+        });
+
         gridLayoutRight.add(new JLabel(""));
+        gridLayoutRight.add(buttonAdd);
         gridLayoutRight.add(readData);
         readData.addMouseListener(new MouseAdapter() {
             @Override
@@ -115,8 +170,9 @@ public class GUI extends JFrame {
                 }
             }
         });
-        gridLayoutRight.add(infoLabel);
+
         gridLayoutRight.add(deleteData);
+        gridLayoutRight.add(infoLabel);
         deleteData.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -130,7 +186,7 @@ public class GUI extends JFrame {
         GridLayout gridLayout = new GridLayout(1,2);
 
         mainGridPanel.setLayout(gridLayout);
-        mainGridPanel.add(flowLayoutLeft);
+        mainGridPanel.add(borderLayoutLeft);
         mainGridPanel.add(gridLayoutRight);
 
         /* Add to tray functionality */
@@ -223,6 +279,7 @@ public class GUI extends JFrame {
             currentTime = new SimpleDateFormat("HH:mm")
                     .format(new Date(System.currentTimeMillis()));
             labelTime.setText("<html><span style='font-weight: bold; font-size: 20px;'>"+ currentTime +"</span></html>");
+
             checkTime.getAndDecrement();
             String label,hour;
             if(checkTime.get() == 0) {
@@ -260,7 +317,12 @@ public class GUI extends JFrame {
 
     private void popupWindowAdd(){
         JFrame addFrame = new JFrame("A new job");
-
+        try {
+            BufferedImage img = ImageIO.read(new File("./images/popupBackground.png"));
+            addFrame.setContentPane(new ImagePrinter(img));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
         Container content = addFrame.getContentPane();
         SpringLayout sL = new SpringLayout();
 
@@ -270,6 +332,8 @@ public class GUI extends JFrame {
         JTextField name = new JTextField(50);
         JTextField hour = new JTextField(5);
         JButton addButton = new JButton("Add");
+        hourLabel.setForeground(Color.white);
+        nameLabel.setForeground(Color.white);
 
         content.add(nameLabel); content.add(name);
         content.add(hourLabel); content.add(hour);
