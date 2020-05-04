@@ -10,7 +10,7 @@
 <br />
 ## Usage
 <br />
-Left mouse click / scroll click - Delete job. <wbr/>
-Right mouse click - Edit job. <wbr/>
-Press "SAVE" every time, you add a new job. Then exit. <wbr/>
-There are notifications. App will notify exactly at the time you set, and is in tray.<wbr/>
+Left mouse click / scroll click - Delete job. <br/>
+Right mouse click - Edit job. <br/>
+Press "SAVE" every time, you add a new job. Then exit. <br/>
+There are notifications. App will notify exactly at the time you set, and is in tray.<br/>
