@@ -109,7 +109,7 @@ public class JobList {
 
         popupFrame = new JFrame("Delete");
         try {
-            BufferedImage img = ImageIO.read(new File("./images/deleteAsk.png"));
+            BufferedImage img = ImageIO.read(getClass().getResource("/deleteAsk.png"));
             popupFrame.setContentPane(new ImagePrinter(img));
         } catch (IOException e){
             e.printStackTrace();
@@ -131,7 +131,7 @@ public class JobList {
 
     private void popupWindowEdit(){
         try {
-            BufferedImage img = ImageIO.read(new File("./images/popupBackground.png"));
+            BufferedImage img = ImageIO.read(getClass().getResource("/popupBackground.png"));
             popupFrame.setContentPane(new ImagePrinter(img));
         } catch (IOException e){
             e.printStackTrace();

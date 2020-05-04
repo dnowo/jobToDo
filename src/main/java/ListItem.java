@@ -11,7 +11,7 @@ class ListRenderer implements ListCellRenderer {
         protected void paintComponent(Graphics g) {
 
             try{
-                g.drawImage(ImageIO.read(new File("./images/job.png")), 0, 0, null);
+                g.drawImage(ImageIO.read(getClass().getResource("/job.png")), 0, 0, null);
             }catch (IOException e){
                 e.printStackTrace();
             }

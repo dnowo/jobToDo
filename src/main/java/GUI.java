@@ -40,11 +40,12 @@ public class GUI extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 try{
-                    g.drawImage(ImageIO.read(new File("./images/rightGridBackground.png")), 0, 0, null);
+                    g.drawImage(ImageIO.read(getClass().getResource("/rightGridBackground.png")), 0, 0, null);
 
                 }catch(IOException e){
                     e.printStackTrace();
                 }
+                setBackground(Color.black);
             }
         };
         /* Set system default layout */
@@ -66,7 +67,7 @@ public class GUI extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 try{
-                    BufferedImage image = ImageIO.read(new File("./images/leftGridBackground.png"));
+                    BufferedImage image = ImageIO.read(getClass().getResource("/leftGridBackground.png"));
                     int iw = image.getWidth(this);
                     int ih = image.getHeight(this);
                     if (iw > 0 && ih > 0) {
@@ -109,11 +110,11 @@ public class GUI extends JFrame {
         JLabel infoLabel = new JLabel();
 
         try{
-            buttonAdd = new JLabel(new ImageIcon(ImageIO.read(new File("./images/buttonAdd.png"))));
-            deleteData = new JLabel(new ImageIcon(ImageIO.read(new File("./images/buttonDelete.png"))));
-            saveData = new JLabel(new ImageIcon(ImageIO.read(new File("./images/buttonSave.png"))));
-            readData = new JLabel(new ImageIcon(ImageIO.read(new File("./images/buttonRead.png"))));
-            infoLabel = new JLabel(new ImageIcon(ImageIO.read(new File("./images/infoLabel.png"))));
+            buttonAdd = new JLabel(new ImageIcon(ImageIO.read(getClass().getResource("/buttonAdd.png"))));
+            deleteData = new JLabel(new ImageIcon(ImageIO.read(getClass().getResource("/buttonDelete.png"))));
+            saveData = new JLabel(new ImageIcon(ImageIO.read(getClass().getResource("/buttonSave.png"))));
+            readData = new JLabel(new ImageIcon(ImageIO.read(getClass().getResource("/buttonRead.png"))));
+            infoLabel = new JLabel(new ImageIcon(ImageIO.read(getClass().getResource("/infoLabel.png"))));
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -195,7 +196,7 @@ public class GUI extends JFrame {
             return;
         }
         SystemTray systemTray = SystemTray.getSystemTray();
-        Image image = Toolkit.getDefaultToolkit().getImage("./images/favicon.png");
+        Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/favicon.png"));
 
         PopupMenu trayPopupMenu = new PopupMenu();
 
@@ -308,7 +309,7 @@ public class GUI extends JFrame {
         this.setResizable(false);
         this.setLocation(150,50);
         try{
-            this.setIconImage(ImageIO.read(new File("./images/favicon.png")));
+            this.setIconImage(ImageIO.read(getClass().getResource("/favicon.png")));
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -318,7 +319,7 @@ public class GUI extends JFrame {
     private void popupWindowAdd(){
         JFrame addFrame = new JFrame("A new job");
         try {
-            BufferedImage img = ImageIO.read(new File("./images/popupBackground.png"));
+            BufferedImage img = ImageIO.read(getClass().getResource("/popupBackground.png"));
             addFrame.setContentPane(new ImagePrinter(img));
         } catch (IOException e){
             e.printStackTrace();
