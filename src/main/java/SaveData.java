@@ -3,7 +3,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-
+/**
+ * Class saves data of jobs in file.
+ * @author Daniel Nowosielecki
+ * @version 1.0.0
+ * */
 public class SaveData implements Runnable {
     private List<ListItem> list;
     public static final String pathToFile =  "C:" + File.separator
@@ -33,6 +37,9 @@ public class SaveData implements Runnable {
     public void run() {
         writeData();
     }
+    /**
+     * Method writes jobs data from program to file.
+     * */
     private void writeData(){
         FileWriter fileWriter = null;
         BufferedWriter bufferedWriter = null;

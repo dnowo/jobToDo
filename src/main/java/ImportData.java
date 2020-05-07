@@ -3,7 +3,11 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
+/**
+ * Class creating data import on new thread.
+ * @author Daniel Nowosielecki
+ * @version 1.0.0
+ * */
 public class ImportData implements Runnable {
     private File fileToRead;
     private List<ListItem> list = new ArrayList<>();
@@ -16,7 +20,9 @@ public class ImportData implements Runnable {
     public void run() {
         readData();
     }
-
+    /**
+     * Method reads data from .jobs file.
+     * */
     private void readData(){
         try{
             Scanner reader = new Scanner(fileToRead);
@@ -29,7 +35,9 @@ public class ImportData implements Runnable {
             e.printStackTrace();
         }
     }
-
+    /**
+     *  Getter for list of imported jobs.
+     * */
     public List<ListItem> getList() {
         return this.list;
     }

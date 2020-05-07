@@ -8,7 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Class creating list of jobs and its logic also Mouse clicks, mouse actions.
+ * @author Daniel Nowosielecki
+ * @version 1.0.0
+ * */
 public class JobList {
     private List<ListItem> jobs = new ArrayList<>();
     private JList<Object> jListJobs;
@@ -20,7 +24,9 @@ public class JobList {
     private JFrame popupFrame;
 
     private boolean isClicked = false;
-
+    /**
+     * Constructor sets up job list, its action listeners and data - loading settings.
+     */
     JobList(){
         jListJobs = new JList<>(jobs.toArray());
 
@@ -90,21 +96,34 @@ public class JobList {
         });
 
     }
+    /**
+     * A job list as List of ListItems getter.
+     * @return jobs     list of jobs.
+     * */
     public List<ListItem> getJobs(){
         return jobs;
     }
-
+    /**
+     * A job list as JList getter.
+     * @return jListJobs    JList of jobs.
+     * */
     public JList<Object> getJobList(){
         return this.jListJobs;
     }
-
+    /**
+     * Method adds to list a job.
+     * @param label     means name of job (200 chars max).
+     * @param hour      means hour of job to notify.
+     * */
     public void addToList(String label, String hour){
         jobs.add(new ListItem(label, hour));
         jListJobs.setListData(jobs.toArray());
         jListJobs.revalidate();
         jListJobs.repaint();
     }
-
+    /**
+     * Method pops out delete ListItem window (a job).
+     * */
     private void popupWindowDelete(){
 
         popupFrame = new JFrame("Delete");
@@ -128,7 +147,9 @@ public class JobList {
         isClicked = true;
         popupFrame.setDefaultCloseOperation(0);
     }
-
+    /**
+     *  Method runs edit window.
+     * */
     private void popupWindowEdit(){
         try {
             BufferedImage img = ImageIO.read(getClass().getResource("/popupBackground.png"));
@@ -163,14 +184,19 @@ public class JobList {
         popupFrame.setSize(new Dimension(500,200));
         popupFrame.setVisible(true);
     }
-
+    /**
+     * Method updates list of jobs.
+     * @param list List of ListItems(jobs).
+     * */
     public void update(List<ListItem> list){
         jobs.addAll(list);
         jListJobs.setListData(jobs.toArray());
         jListJobs.revalidate();
         jListJobs.repaint();
     }
-
+    /**
+     * Method imports default data on program start. Saved in .jobs file.
+     * */
     public void setDefaultData(){
         ImportData defaultImport = new ImportData(new File(SaveData.pathToFile));
         Thread defaultReadThread = new Thread(defaultImport);

@@ -1,6 +1,5 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
@@ -11,7 +10,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
-
+/**
+ * Class creates graphics user interface, buttons, actions, time, name, tray and job list.
+ * @author Daniel Nowosielecki
+ * @version 1.0.0
+ * */
 public class GUI extends JFrame {
 
     static final int WIDTH = 1000;
@@ -297,8 +300,6 @@ public class GUI extends JFrame {
             mainGridPanel.revalidate();
         };
 
-
-        /* Start a timer */
         new Timer(delay, refresh).start();
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -315,7 +316,9 @@ public class GUI extends JFrame {
         }
 
     }
-
+    /**
+     * Method pops out a frame with add job options on call.
+     */
     private void popupWindowAdd(){
         JFrame addFrame = new JFrame("A new job");
         try {
