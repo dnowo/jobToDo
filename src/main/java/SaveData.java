@@ -50,6 +50,10 @@ public class SaveData implements Runnable {
                 bufferedWriter.write(i.getLabel()
                         + "~!~"
                         + i.getHour()
+                        + "~!~"
+                        + i.isCykliczne()
+                        + "~!~"
+                        + i.getPriorytet()
                         );
                 bufferedWriter.newLine();
             }

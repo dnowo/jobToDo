@@ -29,7 +29,7 @@ public class ImportData implements Runnable {
             while(reader.hasNextLine()){
                 String data = reader.nextLine();
                 String[] splited = data.split("~!~");
-                list.add(new ListItem(splited[0], splited[1]));
+                list.add(new ListItem(splited[0], splited[1],Boolean.parseBoolean(splited[2]), Integer.parseInt(splited[3])));
             }
         }catch (FileNotFoundException e){
             e.printStackTrace();

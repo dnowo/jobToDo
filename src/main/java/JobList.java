@@ -6,8 +6,9 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
+
 /**
  * Class creating list of jobs and its logic also Mouse clicks, mouse actions.
  * @author Daniel Nowosielecki
@@ -21,6 +22,8 @@ public class JobList {
     private JButton noButton;
     private JTextField name;
     private JTextField hour;
+    private JTextField priorytet;
+    private JCheckBox cykliczne;
     private JFrame popupFrame;
 
     private boolean isClicked = false;
@@ -47,7 +50,11 @@ public class JobList {
                     name = new JTextField(50);
                     hour = new JTextField(5);
                     editButton = new JButton("Edit");
+                    priorytet = new JTextField("Priorytet",10);
                     popupFrame.setBounds(jobToDo.marginProgram);
+                    cykliczne = new JCheckBox("Praca cykliczna? ");
+                    cykliczne.setSelected(item.isCykliczne());
+                    priorytet.setText(String.valueOf(item.getPriorytet()));
                     name.setText(item.getLabel());
                     hour.setText(item.getHour());
 
@@ -56,7 +63,7 @@ public class JobList {
                         @Override
                         public void mousePressed(MouseEvent e) {
                             super.mouseClicked(e);
-                            jobs.set(index,new ListItem(name.getText(), hour.getText()));
+                            jobs.set(index,new ListItem(name.getText(), hour.getText(), cykliczne.isSelected(), Integer.parseInt(priorytet.getText())));
                             // Have to revalidate list again after button pressed.
                             list.setListData(jobs.toArray());
                             list.revalidate();
@@ -94,7 +101,7 @@ public class JobList {
 
             }
         });
-
+        int array[] = {1,2,3,4};
     }
     /**
      * A job list as List of ListItems getter.
@@ -115,8 +122,22 @@ public class JobList {
      * @param label     means name of job (200 chars max).
      * @param hour      means hour of job to notify.
      * */
-    public void addToList(String label, String hour){
-        jobs.add(new ListItem(label, hour));
+    public void addToList(String label, String hour, boolean cykliczne, int priorytet){
+        jobs.add(new ListItem(label, hour, cykliczne, priorytet));
+        Comparator<ListItem> itemComparator = (ListItem i1, ListItem i2) -> String.valueOf(i2.getPriorytet()).compareTo(String.valueOf(i1.getPriorytet()));
+        jobs.sort(itemComparator);
+        jListJobs.setListData(jobs.toArray());
+        jListJobs.revalidate();
+        jListJobs.repaint();
+    }
+    public void checkCyklicznosc(){
+        for(int i = 0;i<jobs.size();i++)
+        {
+            if(jobs.get(i).isCykliczne() == false)
+            {
+                jobs.remove(i);
+            }
+        }
         jListJobs.setListData(jobs.toArray());
         jListJobs.revalidate();
         jListJobs.repaint();
@@ -168,6 +189,8 @@ public class JobList {
         content.add(nameLabel); content.add(name);
         content.add(hourLabel); content.add(hour);
         content.add(editButton);
+        content.add(cykliczne);
+        content.add(priorytet);
 
         sL.putConstraint(SpringLayout.WEST, nameLabel,10,SpringLayout.WEST, content);
         sL.putConstraint(SpringLayout.NORTH, nameLabel,10,SpringLayout.WEST, content);
@@ -179,6 +202,10 @@ public class JobList {
         sL.putConstraint(SpringLayout.WEST, hourLabel,10,SpringLayout.WEST, content);
         sL.putConstraint(SpringLayout.WEST, editButton,50,SpringLayout.WEST, hour);
         sL.putConstraint(SpringLayout.NORTH, editButton,18,SpringLayout.NORTH, hourLabel);
+        sL.putConstraint(SpringLayout.NORTH, cykliczne,25,SpringLayout.NORTH, editButton);
+        sL.putConstraint(SpringLayout.NORTH, priorytet,25,SpringLayout.NORTH, cykliczne);
+
+
 
         content.setLayout(sL);
         popupFrame.setSize(new Dimension(500,200));
@@ -193,6 +220,10 @@ public class JobList {
         jListJobs.setListData(jobs.toArray());
         jListJobs.revalidate();
         jListJobs.repaint();
+    }
+    public int getSize()
+    {
+        return jobs.size();
     }
     /**
      * Method imports default data on program start. Saved in .jobs file.

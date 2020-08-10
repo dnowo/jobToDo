@@ -295,6 +295,9 @@ public class GUI extends JFrame {
                 }
                 checkTime.set(30);
             }
+            String timeReset = "00:00";
+
+            if(timeReset.equals(currentTime)){ listOfJobs.checkCyklicznosc(); }
 
             mainGridPanel.repaint();
             mainGridPanel.revalidate();
@@ -319,6 +322,9 @@ public class GUI extends JFrame {
     /**
      * Method pops out a frame with add job options on call.
      */
+    /**
+    df
+    * */
     private void popupWindowAdd(){
         JFrame addFrame = new JFrame("A new job");
         try {
@@ -336,11 +342,15 @@ public class GUI extends JFrame {
         JTextField name = new JTextField(50);
         JTextField hour = new JTextField(5);
         JButton addButton = new JButton("Add");
+        JCheckBox cykliczne = new JCheckBox("Praca cykliczna? ");
+        JTextField priorytet = new JTextField("Priorytet",10);
         hourLabel.setForeground(Color.white);
         nameLabel.setForeground(Color.white);
 
         content.add(nameLabel); content.add(name);
         content.add(hourLabel); content.add(hour);
+        content.add(cykliczne);
+        content.add(priorytet);
 
         content.add(warningLabel); warningLabel.setVisible(false);
 
@@ -359,6 +369,11 @@ public class GUI extends JFrame {
         sL.putConstraint(SpringLayout.NORTH, warningLabel,28,SpringLayout.NORTH, hour);
         sL.putConstraint(SpringLayout.WEST, warningLabel,10,SpringLayout.WEST, hour);
 
+        sL.putConstraint(SpringLayout.NORTH, cykliczne,15,SpringLayout.NORTH, warningLabel);
+        sL.putConstraint(SpringLayout.WEST, priorytet,25,SpringLayout.NORTH, cykliczne);
+        sL.putConstraint(SpringLayout.NORTH, priorytet,50,SpringLayout.NORTH, hour);
+
+
         content.setLayout(sL);
         addFrame.setBounds(jobToDo.marginProgram);
         addFrame.setSize(new Dimension(500,200));
@@ -370,9 +385,11 @@ public class GUI extends JFrame {
                 super.mousePressed(e);
                 String nameJob = name.getText();
                 String hourJob = hour.getText();
+                Boolean isCykliczne = cykliczne.isSelected();
+                int priorytetJob = Integer.parseInt(priorytet.getText());
                 InputValidator inputValidator = new InputValidator(nameJob, hourJob);
                 if (inputValidator.isLabelGood() && inputValidator.isHourGood()){
-                    listOfJobs.addToList(nameJob, hourJob);
+                    listOfJobs.addToList(nameJob, hourJob, isCykliczne, priorytetJob);
                     warningLabel.setVisible(false);
                     addFrame.dispose();
                 }else {

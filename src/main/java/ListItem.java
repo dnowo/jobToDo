@@ -46,15 +46,23 @@ class ListItem {
     private StringBuilder job;
     private boolean isSelected = false;
     private String hour;
+    private boolean cykliczne;
+    private int priorytet;
 
-    public ListItem(String label, String hour) {
+    public ListItem(String label, String hour, boolean cykliczne, int priorytet) {
         this.label = label;
         this.hour = hour;
+        this.cykliczne = cykliczne;
+        this.priorytet = priorytet;
         this.job = new StringBuilder()
                 .append("<html>")
                 .append(label)
                 .append("<br><span style=\"font-weight: bold;font-size: 8px;\">")
                 .append(hour)
+                .append(" Cykliczne: ")
+                .append(cykliczne)
+                .append("<br> Priorytet: ")
+                .append(priorytet)
                 .append("</span></html>");
     }
     /**
@@ -80,6 +88,14 @@ class ListItem {
      * */
     public String getLabel() {
         return label;
+    }
+
+    public boolean isCykliczne() {
+        return cykliczne;
+    }
+
+    public int getPriorytet() {
+        return priorytet;
     }
 
     @Override
